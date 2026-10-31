@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="ApnaStock.in – India's smartest AI-powered stock chat and portfolio strategy platform by Enersit AI. Get real-time insights, portfolio analysis, and market intelligence."/>
+  <meta name="keywords" content="stock market India, portfolio strategy, AI stocks, NSE BSE analysis, stock chat"/>
+  <meta property="og:title" content="ApnaStock.in – AI Stock Advisor by Enersit AI"/>
+  <meta property="og:description" content="Chat with your AI Stock Advisor. Get portfolio insights, market analysis, and investment strategies powered by Enersit AI."/>
+  <meta property="og:type" content="website"/>
+  <title>ApnaStock.in – AI Stock Advisor | Enersit AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- Animated Background -->
+  <div class="bg-grid"></div>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M4 24L10 16L15 20L21 10L28 8" stroke="url(#lg1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 8H28V14" stroke="url(#lg1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="lg1" x1="4" y1="16" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#F5A623"/>
+                <stop offset="1" stop-color="#F7C94E"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">ApnaStock<span class="logo-dot">.in</span></span>
+          <span class="logo-sub">by Enersit AI</span>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#chat" class="nav-link nav-cta" id="startChatBtn">Start Chat</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Ticker Bar -->
+  <div class="ticker-bar">
+    <div class="ticker-wrapper">
+      <div class="ticker-track" id="tickerTrack">
+        <span class="tick-item">NIFTY 50 <em class="up">▲ 24,892 (+1.24%)</em></span>
+        <span class="tick-item">SENSEX <em class="up">▲ 82,134 (+0.98%)</em></span>
+        <span class="tick-item">BANK NIFTY <em class="up">▲ 53,240 (+1.56%)</em></span>
+        <span class="tick-item">RELIANCE <em class="up">▲ 2,945 (+2.10%)</em></span>
+        <span class="tick-item">TCS <em class="up">▲ 4,120 (+0.83%)</em></span>
+        <span class="tick-item">HDFC BANK <em class="down">▼ 1,732 (-0.41%)</em></span>
+        <span class="tick-item">INFOSYS <em class="up">▲ 1,875 (+1.52%)</em></span>
+        <span class="tick-item">WIPRO <em class="up">▲ 567 (+0.72%)</em></span>
+        <span class="tick-item">ONGC <em class="down">▼ 278 (-0.34%)</em></span>
+        <span class="tick-item">MARUTI <em class="up">▲ 12,450 (+1.18%)</em></span>
+        <span class="tick-item">ITC <em class="up">▲ 498 (+0.65%)</em></span>
+        <span class="tick-item">SBI <em class="up">▲ 834 (+1.95%)</em></span>
+        <!-- Duplicate for seamless loop -->
+        <span class="tick-item">NIFTY 50 <em class="up">▲ 24,892 (+1.24%)</em></span>
+        <span class="tick-item">SENSEX <em class="up">▲ 82,134 (+0.98%)</em></span>
+        <span class="tick-item">BANK NIFTY <em class="up">▲ 53,240 (+1.56%)</em></span>
+        <span class="tick-item">RELIANCE <em class="up">▲ 2,945 (+2.10%)</em></span>
+        <span class="tick-item">TCS <em class="up">▲ 4,120 (+0.83%)</em></span>
+        <span class="tick-item">HDFC BANK <em class="down">▼ 1,732 (-0.41%)</em></span>
+        <span class="tick-item">INFOSYS <em class="up">▲ 1,875 (+1.52%)</em></span>
+        <span class="tick-item">WIPRO <em class="up">▲ 567 (+0.72%)</em></span>
+        <span class="tick-item">ONGC <em class="down">▼ 278 (-0.34%)</em></span>
+        <span class="tick-item">MARUTI <em class="up">▲ 12,450 (+1.18%)</em></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Powered by Enersit AI &middot; Frontier Stock Intelligence</span>
+      </div>
+      <h1 class="hero-title">
+        Your AI Stock Advisor<br/>
+        <span class="gradient-text">That Actually Understands</span><br/>
+        The Indian Market
+      </h1>
+      <p class="hero-subtitle">
+        Chat about NSE &amp; BSE stocks, get portfolio strategies, analyse sectors,<br/>
+        and make smarter investment decisions — all in plain Hindi or English.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="scrollToChat()">
+          <span>Start AI Chat Free</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn-secondary" onclick="scrollToFeatures()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <span>See Features</span>
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value">5000+</span>
+          <span class="stat-label">Stocks Covered</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">NSE &amp; BSE</span>
+          <span class="stat-label">Full Coverage</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">24/7</span>
+          <span class="stat-label">AI Available</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="chart-card glass-card">
+        <div class="chart-header">
+          <div>
+            <span class="chart-symbol">NIFTY 50</span>
+            <span class="chart-date">Live Index</span>
+          </div>
+          <span class="chart-change positive">+1.24%</span>
+        </div>
+        <canvas id="heroChart" width="340" height="130"></canvas>
+        <div class="chart-footer">
+          <span class="chart-price">24,892.15</span>
+          <span class="positive chart-delta">▲ 304.50 today</span>
+        </div>
+      </div>
+      <div class="mini-cards">
+        <div class="mini-card glass-card">
+          <span class="mc-sym">RELIANCE</span>
+          <span class="mc-val positive">+2.1%</span>
+        </div>
+        <div class="mini-card glass-card">
+          <span class="mc-sym">TCS</span>
+          <span class="mc-val positive">+0.8%</span>
+        </div>
+        <div class="mini-card glass-card">
+          <span class="mc-sym">HDFC BANK</span>
+          <span class="mc-val negative">-0.4%</span>
+        </div>
+        <div class="mini-card glass-card">
+          <span class="mc-sym">INFOSYS</span>
+          <span class="mc-val positive">+1.5%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="section-container">
+      <div class="section-tag">Capabilities</div>
+      <h2 class="section-title">Everything You Need to<br/><span class="gradient-text">Invest Smarter</span></h2>
+      <p class="section-subtitle">Enersit AI combines frontier language intelligence with deep market knowledge to give you a real edge.</p>
+      <div class="features-grid">
+        <div class="feature-card featured">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <h3>AI Stock Chat</h3>
+          <p>Ask anything about any stock in Hindi or English. Get analysis, fundamentals, news impact, and buy/sell signals instantly.</p>
+          <div class="feature-chips">
+            <span>Hindi Support</span><span>NSE/BSE</span><span>Real-time</span>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3>Portfolio Strategy</h3>
+          <p>AI-curated portfolio strategies based on your risk appetite, investment horizon, and current market conditions.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-6"/></svg>
+          </div>
+          <h3>Technical Analysis</h3>
+          <p>RSI, MACD, moving averages, chart patterns — explained simply for Indian markets by your AI advisor.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+          <h3>Sector Intelligence</h3>
+          <p>Analyse IT, Banking, Pharma, Auto, and more — find which sectors are set for growth next quarter.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+          </div>
+          <h3>IPO &amp; News Insights</h3>
+          <p>Stay ahead with AI-summarised news, upcoming IPO analysis, and market event impact assessments.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Risk Management</h3>
+          <p>Stop-loss strategies, position sizing, portfolio diversification — protect your capital intelligently.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-section" id="how-it-works">
+    <div class="section-container">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">How <span class="gradient-text">ApnaStock</span> Works</h2>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3>Type Your Question</h3>
+          <p>Ask about any stock, sector, or investment strategy in Hindi or English. No financial jargon required.</p>
+        </div>
+        <div class="step-arrow">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3>Enersit AI Analyses</h3>
+          <p>Our frontier AI model processes your query with deep market knowledge and provides a comprehensive, actionable answer.</p>
+        </div>
+        <div class="step-arrow">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3>Invest Confidently</h3>
+          <p>Use the insights to make smarter decisions. Ask follow-up questions to dig deeper — unlimited conversations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat Section -->
+  <section class="chat-section" id="chat">
+    <div class="section-container">
+      <div class="section-tag">Live AI Chat</div>
+      <h2 class="section-title">Chat with Your<br/><span class="gradient-text">Stock Advisor</span></h2>
+      <p class="section-subtitle">Frontier AI intelligence for Indian stock market · by Enersit AI</p>
+
+      <div class="chat-wrapper">
+        <!-- Sidebar -->
+        <div class="chat-sidebar">
+          <div class="sidebar-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            Quick Topics
+          </div>
+          <div class="quick-topics">
+            <button class="topic-btn" onclick="setPrompt('What are the top performing stocks in NSE this month and why are they outperforming?')">📈 Top NSE Stocks</button>
+            <button class="topic-btn" onclick="setPrompt('Suggest a detailed portfolio strategy for long term wealth creation in India for a moderate risk investor')">💼 Long-term Strategy</button>
+            <button class="topic-btn" onclick="setPrompt('Explain RSI and MACD in simple terms with examples from Indian stocks')">📊 Technical Analysis</button>
+            <button class="topic-btn" onclick="setPrompt('Which sectors should I invest in for strong returns in the next 6 months in India?')">🏭 Sector Analysis</button>
+            <button class="topic-btn" onclick="setPrompt('How to manage risk in stock market investments? What is position sizing and stop loss?')">🛡️ Risk Management</button>
+            <button class="topic-btn" onclick="setPrompt('Analyse Reliance Industries stock - fundamentals, valuation, and future prospects')">🔍 Stock Deep Dive</button>
+            <button class="topic-btn" onclick="setPrompt('What are upcoming IPOs in India worth investing in and how to evaluate them?')">🚀 IPO Insights</button>
+            <button class="topic-btn" onclick="setPrompt('How to build an optimal SIP plus direct stock portfolio for 10 years to create wealth in India?')">⏳ SIP + Stocks Plan</button>
+            <button class="topic-btn" onclick="setPrompt('Mujhe NIFTY 50 ke baare mein samjhao aur kaise main isme invest kar sakta hoon?')">🇮🇳 Hindi Mein Poochho</button>
+          </div>
+          <div class="sidebar-disclaimer">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            For educational purposes only. Not SEBI-registered financial advice. Consult a registered advisor for personal investments.
+          </div>
+        </div>
+
+        <!-- Chat Main -->
+        <div class="chat-main">
+          <div class="chat-header">
+            <div class="ai-avatar">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h.01M15 9h.01M9 15s1 2 3 2 3-2 3-2"/></svg>
+            </div>
+            <div class="ai-info">
+              <div class="ai-name">Enersit AI Advisor</div>
+              <div class="ai-status"><span class="status-dot"></span> Online · Ready to help</div>
+            </div>
+            <div class="header-actions">
+              <button class="clear-btn" onclick="clearChat()" title="Clear chat">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="message ai-message">
+              <div class="msg-avatar ai-av">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h.01M15 9h.01M9 15s1 2 3 2 3-2 3-2"/></svg>
+              </div>
+              <div class="msg-bubble ai-bubble">
+                <p>Namaste! 🙏 I'm your <strong>Enersit AI Stock Advisor</strong> for <strong>ApnaStock.in</strong>.</p>
+                <p>I can help you with:</p>
+                <ul>
+                  <li>📈 Stock analysis (NSE &amp; BSE)</li>
+                  <li>💼 Portfolio building &amp; strategies</li>
+                  <li>📊 Technical &amp; fundamental analysis</li>
+                  <li>🏭 Sector &amp; market insights</li>
+                  <li>🛡️ Risk management tips</li>
+                  <li>🚀 IPO analysis &amp; news</li>
+                </ul>
+                <p>Ask me anything in <strong>Hindi or English!</strong> What would you like to know today?</p>
+                <div class="msg-time">Just now</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="input-wrapper">
+              <textarea
+                id="chatInput"
+                class="chat-input"
+                placeholder="Ask about any stock, sector, or portfolio strategy... (Hindi/English)"
+                rows="1"
+                onkeydown="handleKeyDown(event)"
+                oninput="autoResize(this)"
+              ></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="input-footer">
+              <span>Press <kbd>Enter</kbd> to send &middot; <kbd>Shift+Enter</kbd> for new line</span>
+              <span class="model-badge">⚡ Enersit AI Frontier</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+            <path d="M4 24L10 16L15 20L21 10L28 8" stroke="url(#flg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M22 8H28V14" stroke="url(#flg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="flg" x1="4" y1="16" x2="28" y2="16" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#F5A623"/>
+                <stop offset="1" stop-color="#F7C94E"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span>ApnaStock.in</span>
+        </div>
+        <p>Intelligent stock market conversations powered by <strong>Enersit AI</strong>. Making Indian investing smarter, one conversation at a time.</p>
+        <p class="disclaimer-text">⚠️ Disclaimer: All content is for educational purposes only. This is not SEBI-registered investment advice. Please consult a registered financial advisor before making investment decisions.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#features">Features</a>
+          <a href="#chat">AI Chat</a>
+          <a href="#how-it-works">How It Works</a>
+        </div>
+        <div class="footer-col">
+          <h4>Markets</h4>
+          <a href="#chat" onclick="setPrompt('Tell me about NSE top gainers today and why they are rising')">NSE Stocks</a>
+          <a href="#chat" onclick="setPrompt('Analyse BSE Sensex current trend and future outlook')">BSE Sensex</a>
+          <a href="#chat" onclick="setPrompt('Best mutual funds to invest in right now in India')">Mutual Funds</a>
+        </div>
+        <div class="footer-col">
+          <h4>Enersit AI</h4>
+          <a href="#">About Us</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 ApnaStock.in &middot; Built with ❤️ by <strong>Enersit AI</strong></span>
+      <span>Market data shown is illustrative. Always verify before investing.</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
