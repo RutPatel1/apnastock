@@ -1,5 +1,5 @@
 /* =====================================================
-   ApnaStock.in – App JavaScript
+   ApnaStocks.in – App JavaScript
    by Enersit AI · Powered by Enersit Frontier AI Model
    ===================================================== */
 
@@ -15,7 +15,7 @@ const ENERSIT_CONFIG = {
   get apiKey() {
     return localStorage.getItem('enersit_api_key') || 'AIzaSyAh0fTZPU7_jx8VdO8gFMNS3MPsutnbwZU';
   },
-  systemPrompt: `You are Enersit Frontier AI, an elite proprietary financial intelligence model created by Enersit AI for ApnaStock.in — India's leading AI-powered stock chat and portfolio strategy platform.
+  systemPrompt: `You are Enersit Frontier AI, an elite proprietary financial intelligence model created by Enersit AI for ApnaStocks.in — India's leading AI-powered stock chat and portfolio strategy platform.
 
 CRITICAL IDENTITY RULE:
 - You are solely built and hosted by Enersit AI.
@@ -107,14 +107,14 @@ async function loadLiveMarketData() {
         // Cache is fresh — use it immediately
         liveStockData = data;
         renderLiveData();
-        console.log('[ApnaStock] Using cached market data (age:', Math.round((Date.now()-ts)/60000), 'min)');
+        console.log('[ApnaStocks] Using cached market data (age:', Math.round((Date.now()-ts)/60000), 'min)');
         return;
       }
     } catch(e) { /* corrupt cache, refetch */ }
   }
 
   // Fetch fresh data from Alpha Vantage
-  console.log('[ApnaStock] Fetching live market data from Alpha Vantage...');
+  console.log('[ApnaStocks] Fetching live market data from Alpha Vantage...');
   showTickerLoading();
 
   const results = {};
@@ -141,7 +141,7 @@ async function loadLiveMarketData() {
       // Respect free tier: 5 req/min → 300ms gap per call
       await new Promise(r => setTimeout(r, 320));
     } catch(e) {
-      console.warn('[ApnaStock] Failed to fetch', stock.symbol, e);
+      console.warn('[ApnaStocks] Failed to fetch', stock.symbol, e);
     }
   }
 
@@ -149,9 +149,9 @@ async function loadLiveMarketData() {
     liveStockData = results;
     localStorage.setItem(cacheKey, JSON.stringify({ data: results, ts: Date.now() }));
     renderLiveData();
-    console.log('[ApnaStock] Live data loaded:', Object.keys(results).length, 'stocks');
+    console.log('[ApnaStocks] Live data loaded:', Object.keys(results).length, 'stocks');
   } else {
-    console.warn('[ApnaStock] No live data received. Check API key or rate limit.');
+    console.warn('[ApnaStocks] No live data received. Check API key or rate limit.');
   }
 }
 
@@ -257,7 +257,7 @@ async function updateLiveHeroChart() {
       }
     }
   } catch(e) {
-    console.warn('[ApnaStock] Hero chart update failed:', e);
+    console.warn('[ApnaStocks] Hero chart update failed:', e);
   }
 }
 
@@ -265,7 +265,7 @@ async function updateLiveHeroChart() {
 function injectLiveDataIntoAI() {
   if (Object.keys(liveStockData).length === 0) return;
   const now = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
-  let liveContext = `\n\n[LIVE MARKET DATA as of ${now} IST via ApnaStock Real-Time Feed]\n`;
+  let liveContext = `\n\n[LIVE MARKET DATA as of ${now} IST via ApnaStocks Real-Time Feed]\n`;
   Object.values(liveStockData).forEach(s => {
     const dir = s.isUp ? '↑' : '↓';
     liveContext += `• ${s.symbol}: ₹${s.price} ${dir}${s.changePct}% | H:₹${s.high} L:₹${s.low} | Vol:${s.volume}\n`;
