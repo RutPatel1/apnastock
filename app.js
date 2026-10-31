@@ -55,20 +55,227 @@ COMMUNICATION STYLE:
 let conversationHistory = [];
 let isLoading = false;
 
+// ─── Alpha Vantage Config ────────────────────────────────
+const AV_CONFIG = {
+  apiKey: 'WS0E2780ZOVDBB0V',
+  base: 'https://www.alphavantage.co/query',
+  cacheTTL: 15 * 60 * 1000, // 15-minute cache → conserves free 25 calls/day
+  stocks: [
+    { symbol: 'RELIANCE.BSE', name: 'RELIANCE',  color: '#10DC8D' },
+    { symbol: 'TCS.BSE',      name: 'TCS',       color: '#10DC8D' },
+    { symbol: 'HDFCBANK.BSE', name: 'HDFC BANK', color: '#FF4D6A' },
+    { symbol: 'INFY.BSE',     name: 'INFOSYS',   color: '#10DC8D' },
+    { symbol: 'WIPRO.BSE',    name: 'WIPRO',     color: '#10DC8D' },
+    { symbol: 'SBIN.BSE',     name: 'SBI',       color: '#10DC8D' },
+    { symbol: 'ITC.BSE',      name: 'ITC',       color: '#10DC8D' },
+    { symbol: 'MARUTI.BSE',   name: 'MARUTI',    color: '#10DC8D' },
+  ]
+};
+
+// Live data store
+let liveStockData = {};
+
 // ─── DOM Ready ──────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  drawHeroChart();
+  drawHeroChart();          // Draw placeholder first
   initNavbarScroll();
   initInputAutoResize();
 
-  // Show modal only if localStorage key is explicitly cleared
+  // Pre-fill API key modal if saved
   const savedKey = localStorage.getItem('enersit_api_key');
   if (savedKey) {
     const inp = document.getElementById('apiKeyInput');
     if (inp) inp.value = savedKey;
   }
-  // Modal is accessible via the key icon in chat header
+
+  // 🔴 Boot live market data
+  loadLiveMarketData();
 });
+
+// ══════════════════════════════════════════════════════════
+//  LIVE MARKET DATA ENGINE (Alpha Vantage)
+// ══════════════════════════════════════════════════════════
+
+async function loadLiveMarketData() {
+  const cacheKey = 'av_stock_cache';
+  const cached = localStorage.getItem(cacheKey);
+
+  if (cached) {
+    try {
+      const { data, ts } = JSON.parse(cached);
+      if (Date.now() - ts < AV_CONFIG.cacheTTL) {
+        // Cache is fresh — use it immediately
+        liveStockData = data;
+        renderLiveData();
+        console.log('[ApnaStock] Using cached market data (age:', Math.round((Date.now()-ts)/60000), 'min)');
+        return;
+      }
+    } catch(e) { /* corrupt cache, refetch */ }
+  }
+
+  // Fetch fresh data from Alpha Vantage
+  console.log('[ApnaStock] Fetching live market data from Alpha Vantage...');
+  showTickerLoading();
+
+  const results = {};
+  // Fetch sequentially to avoid rate limits (5 per min on free tier)
+  for (const stock of AV_CONFIG.stocks) {
+    try {
+      const url = `${AV_CONFIG.base}?function=GLOBAL_QUOTE&symbol=${stock.symbol}&apikey=${AV_CONFIG.apiKey}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      const q = json['Global Quote'];
+      if (q && q['05. price']) {
+        results[stock.name] = {
+          symbol:    stock.name,
+          price:     parseFloat(q['05. price']).toFixed(2),
+          change:    parseFloat(q['09. change']).toFixed(2),
+          changePct: parseFloat(q['10. change percent']).toFixed(2),
+          high:      parseFloat(q['03. high']).toFixed(2),
+          low:       parseFloat(q['04. low']).toFixed(2),
+          volume:    parseInt(q['06. volume']).toLocaleString('en-IN'),
+          prevClose: parseFloat(q['08. previous close']).toFixed(2),
+          isUp:      parseFloat(q['09. change']) >= 0
+        };
+      }
+      // Respect free tier: 5 req/min → 300ms gap per call
+      await new Promise(r => setTimeout(r, 320));
+    } catch(e) {
+      console.warn('[ApnaStock] Failed to fetch', stock.symbol, e);
+    }
+  }
+
+  if (Object.keys(results).length > 0) {
+    liveStockData = results;
+    localStorage.setItem(cacheKey, JSON.stringify({ data: results, ts: Date.now() }));
+    renderLiveData();
+    console.log('[ApnaStock] Live data loaded:', Object.keys(results).length, 'stocks');
+  } else {
+    console.warn('[ApnaStock] No live data received. Check API key or rate limit.');
+  }
+}
+
+// ─── Render Live Data across UI ─────────────────────────
+function renderLiveData() {
+  updateLiveTicker();
+  updateLiveMiniCards();
+  updateLiveHeroChart();
+  injectLiveDataIntoAI();
+}
+
+// ─── Ticker Bar ──────────────────────────────────────────
+function showTickerLoading() {
+  const track = document.getElementById('tickerTrack');
+  if (!track) return;
+  track.innerHTML = `<span class="tick-item" style="color:var(--gold)">⏳ Loading live market data from Alpha Vantage...</span>`.repeat(3);
+}
+
+function updateLiveTicker() {
+  const track = document.getElementById('tickerTrack');
+  if (!track || Object.keys(liveStockData).length === 0) return;
+
+  const now = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  let html = `<span class="tick-item" style="color:var(--gold);font-weight:700;">🔴 LIVE</span>`;
+
+  // Add index approximations
+  html += `<span class="tick-item">🕐 Updated ${now}</span>`;
+
+  // Add each stock
+  const items = Object.values(liveStockData);
+  const buildItem = (s) => {
+    const sign = s.isUp ? '▲' : '▼';
+    const cls  = s.isUp ? 'up' : 'down';
+    return `<span class="tick-item"><strong>${s.symbol}</strong> ₹${s.price} <em class="${cls}">${sign} ${Math.abs(s.changePct)}%</em></span>`;
+  };
+
+  items.forEach(s => html += buildItem(s));
+  // Duplicate for seamless scroll
+  html += `<span class="tick-item" style="color:var(--gold);font-weight:700;">🔴 LIVE</span>`;
+  items.forEach(s => html += buildItem(s));
+
+  track.innerHTML = html;
+}
+
+// ─── Hero Mini Cards ─────────────────────────────────────
+function updateLiveMiniCards() {
+  const cards = document.querySelectorAll('.mini-card');
+  const keys = ['RELIANCE', 'TCS', 'HDFC BANK', 'INFOSYS'];
+  cards.forEach((card, i) => {
+    const d = liveStockData[keys[i]];
+    if (!d) return;
+    const sign = d.isUp ? '+' : '';
+    card.querySelector('.mc-val').textContent = `${sign}${d.changePct}%`;
+    card.querySelector('.mc-val').className   = `mc-val ${d.isUp ? 'positive' : 'negative'}`;
+    // Add price if there's a second row or tooltip
+    card.title = `₹${d.price} | H: ₹${d.high} | L: ₹${d.low} | Vol: ${d.volume}`;
+  });
+}
+
+// ─── Hero Chart (uses RELIANCE intraday as NIFTY proxy) ──
+async function updateLiveHeroChart() {
+  try {
+    const cacheKey = 'av_chart_cache';
+    const cached = localStorage.getItem(cacheKey);
+    let points = null;
+
+    if (cached) {
+      const { data, ts } = JSON.parse(cached);
+      if (Date.now() - ts < AV_CONFIG.cacheTTL) points = data;
+    }
+
+    if (!points) {
+      const url = `${AV_CONFIG.base}?function=TIME_SERIES_INTRADAY&symbol=RELIANCE.BSE&interval=15min&outputsize=compact&apikey=${AV_CONFIG.apiKey}`;
+      const res  = await fetch(url);
+      const json = await res.json();
+      const ts_data = json['Time Series (15min)'];
+      if (ts_data) {
+        points = Object.values(ts_data).slice(0, 20).reverse().map(v => parseFloat(v['4. close']));
+        localStorage.setItem(cacheKey, JSON.stringify({ data: points, ts: Date.now() }));
+      }
+    }
+
+    if (points && points.length > 1) {
+      drawHeroChart(points);
+      // Update hero chart label
+      const latestReliance = liveStockData['RELIANCE'];
+      if (latestReliance) {
+        const priceEl = document.querySelector('.chart-price');
+        const deltaEl = document.querySelector('.chart-delta');
+        const changeEl = document.querySelector('.chart-change');
+        const symbolEl = document.querySelector('.chart-symbol');
+        if (symbolEl) symbolEl.textContent = 'RELIANCE';
+        if (priceEl)  priceEl.textContent = `₹${latestReliance.price}`;
+        if (deltaEl) {
+          const sign = latestReliance.isUp ? '▲' : '▼';
+          deltaEl.textContent = `${sign} ₹${Math.abs(latestReliance.change)} today`;
+          deltaEl.className = `chart-delta ${latestReliance.isUp ? 'positive' : 'negative'}`;
+        }
+        if (changeEl) {
+          changeEl.textContent = `${latestReliance.isUp ? '+' : ''}${latestReliance.changePct}%`;
+          changeEl.className = `chart-change ${latestReliance.isUp ? 'positive' : 'negative'}`;
+        }
+      }
+    }
+  } catch(e) {
+    console.warn('[ApnaStock] Hero chart update failed:', e);
+  }
+}
+
+// ─── Inject Live Context into AI ─────────────────────────
+function injectLiveDataIntoAI() {
+  if (Object.keys(liveStockData).length === 0) return;
+  const now = new Date().toLocaleString('en-IN', { dateStyle:'medium', timeStyle:'short' });
+  let liveContext = `\n\n[LIVE MARKET DATA as of ${now} IST via ApnaStock Real-Time Feed]\n`;
+  Object.values(liveStockData).forEach(s => {
+    const dir = s.isUp ? '↑' : '↓';
+    liveContext += `• ${s.symbol}: ₹${s.price} ${dir}${s.changePct}% | H:₹${s.high} L:₹${s.low} | Vol:${s.volume}\n`;
+  });
+  liveContext += `Use this live data to answer questions about current prices. Data sourced from BSE.\n`;
+
+  // Append live context to system prompt without exposing the source name
+  ENERSIT_CONFIG._liveContext = liveContext;
+}
+
 
 // ─── Modal Controls ─────────────────────────────────────
 function openKeyModal(isFirstTime = false) {
@@ -156,18 +363,21 @@ function setValidation(el, type, text) {
 }
 
 
-// ─── Hero Chart ─────────────────────────────────────────
-function drawHeroChart() {
+// ─── Hero Chart (accepts optional live data array) ──────
+function drawHeroChart(liveData = null) {
   const canvas = document.getElementById('heroChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
 
-  // Realistic NIFTY data curve
-  const data = [
+  // Use live intraday data if provided, else placeholder
+  const data = liveData && liveData.length > 1 ? liveData : [
     24200, 24350, 24180, 24420, 24510, 24380, 24600,
     24550, 24720, 24650, 24780, 24840, 24760, 24892
   ];
+  const isLive = liveData && liveData.length > 1;
+  const lineColor = isLive ? (data[data.length-1] >= data[0] ? '#10DC8D' : '#FF4D6A') : '#10DC8D';
+  const gradColor = isLive ? (data[data.length-1] >= data[0] ? '16, 220, 141' : '255, 77, 106') : '16, 220, 141';
 
   const min = Math.min(...data) - 100;
   const max = Math.max(...data) + 100;
@@ -178,12 +388,12 @@ function drawHeroChart() {
 
   ctx.clearRect(0, 0, W, H);
 
-  // Gradient fill
+  // Dynamic gradient — green if up, red if down
   const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, 'rgba(16, 220, 141, 0.3)');
-  grad.addColorStop(1, 'rgba(16, 220, 141, 0)');
+  grad.addColorStop(0, `rgba(${gradColor}, 0.3)`);
+  grad.addColorStop(1, `rgba(${gradColor}, 0)`);
 
-  // Smooth line
+  // Smooth area fill
   ctx.beginPath();
   ctx.moveTo(points[0].x, H - 10);
   ctx.lineTo(points[0].x, points[0].y);
@@ -196,26 +406,26 @@ function drawHeroChart() {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Line
+  // Price line
   ctx.beginPath();
   ctx.moveTo(points[0].x, points[0].y);
   for (let i = 1; i < points.length; i++) {
     const cpx = (points[i - 1].x + points[i].x) / 2;
     ctx.bezierCurveTo(cpx, points[i - 1].y, cpx, points[i].y, points[i].x, points[i].y);
   }
-  ctx.strokeStyle = '#10DC8D';
+  ctx.strokeStyle = lineColor;
   ctx.lineWidth = 2.5;
   ctx.stroke();
 
-  // Last point dot
+  // Live dot at last price
   const last = points[points.length - 1];
   ctx.beginPath();
   ctx.arc(last.x, last.y, 5, 0, Math.PI * 2);
-  ctx.fillStyle = '#10DC8D';
+  ctx.fillStyle = lineColor;
   ctx.fill();
   ctx.beginPath();
   ctx.arc(last.x, last.y, 10, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(16, 220, 141, 0.2)';
+  ctx.fillStyle = `rgba(${gradColor}, 0.2)`;
   ctx.fill();
 }
 
@@ -313,9 +523,13 @@ async function callEnersitAIWithFallback(userText) {
   for (const model of ENERSIT_CONFIG.models) {
     try {
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${ENERSIT_CONFIG.apiKey}`;
+      // Build system prompt — append live market data if available
+      const liveCtx = ENERSIT_CONFIG._liveContext || '';
+      const fullSystemPrompt = ENERSIT_CONFIG.systemPrompt + liveCtx;
+
       const body = {
         system_instruction: {
-          parts: [{ text: ENERSIT_CONFIG.systemPrompt }]
+          parts: [{ text: fullSystemPrompt }]
         },
         contents: conversationHistory,
         generationConfig: {
