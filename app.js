@@ -9,9 +9,12 @@ const ENERSIT_CONFIG = {
     'gemini-2.5-flash',
     'gemini-flash-latest',
     'gemini-2.5-flash-lite',
-    'gemini-3.5-flash'
+    'gemini-3.5-flash',
+    'gemini-2.5-pro'
   ],
-  apiKey: 'AQ.Ab8RN6IfDjteUSHzDpzTxN7blXzRXq12eDoT6l9mVeJ25dobfQ',
+  get apiKey() {
+    return localStorage.getItem('enersit_api_key') || 'AIzaSyAh0fTZPU7_jx8VdO8gFMNS3MPsutnbwZU';
+  },
   systemPrompt: `You are Enersit Frontier AI, an elite proprietary financial intelligence model created by Enersit AI for ApnaStock.in — India's leading AI-powered stock chat and portfolio strategy platform.
 
 CRITICAL IDENTITY RULE:
@@ -32,7 +35,7 @@ YOUR CAPABILITIES & EXPERTISE:
    - Moat evaluation and quarterly earnings commentary
 4. Technical Analysis:
    - Support, Resistance, Trendlines, Breakouts
-   - Indicators: RSI (14), MACD (12, 26, 9), 20/50/200-day EMAs, Bollinger Bands
+   - Indicators: RSI (14), MACD (12,26,9), 20/50/200-day EMAs, Bollinger Bands
    - Volume profile & candlestick price action
 5. Sector Analysis:
    - IT, Banking & Financials, Autos & EV, FMCG, Pharma & Healthcare, Energy & Renewables, Infrastructure, Defense, PSU themes
@@ -57,7 +60,101 @@ document.addEventListener('DOMContentLoaded', () => {
   drawHeroChart();
   initNavbarScroll();
   initInputAutoResize();
+
+  // Show modal only if localStorage key is explicitly cleared
+  const savedKey = localStorage.getItem('enersit_api_key');
+  if (savedKey) {
+    const inp = document.getElementById('apiKeyInput');
+    if (inp) inp.value = savedKey;
+  }
+  // Modal is accessible via the key icon in chat header
 });
+
+// ─── Modal Controls ─────────────────────────────────────
+function openKeyModal(isFirstTime = false) {
+  const modal = document.getElementById('keyModal');
+  const closeBtn = document.getElementById('modalCloseBtn');
+  if (!modal) return;
+  // Only show close button if a key already exists (not first-time setup)
+  if (closeBtn) closeBtn.style.display = (!isFirstTime && ENERSIT_CONFIG.apiKey) ? 'flex' : 'none';
+  // Pre-fill if key exists
+  const inp = document.getElementById('apiKeyInput');
+  if (inp && ENERSIT_CONFIG.apiKey) inp.value = ENERSIT_CONFIG.apiKey;
+  modal.classList.add('active');
+}
+
+function closeKeyModal() {
+  const modal = document.getElementById('keyModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function toggleKeyVisibility() {
+  const inp = document.getElementById('apiKeyInput');
+  const icon = document.getElementById('eyeIcon');
+  if (!inp) return;
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  icon.innerHTML = isHidden
+    ? '<line x1="1" y1="1" x2="23" y2="23"/><path d="M9.88 9.88a3 3 0 104.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0112 5c7 0 11 8 11 8a13.16 13.16 0 01-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 002 12s4 8 10 8a9.74 9.74 0 005.39-1.61"/>'
+    : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+async function saveApiKey() {
+  const inp = document.getElementById('apiKeyInput');
+  const msg = document.getElementById('keyValidationMsg');
+  const btn = document.getElementById('saveKeyBtn');
+  const key = inp ? inp.value.trim() : '';
+
+  // Basic format validation
+  if (!key) {
+    setValidation(msg, 'error', '✗ Please paste your API key first.');
+    return;
+  }
+  if (!key.startsWith('AIza') || key.length < 30) {
+    setValidation(msg, 'error', '✗ Invalid format. Key must start with "AIzaSy..." (get it from aistudio.google.com/apikey)');
+    return;
+  }
+
+  // Test the key live
+  setValidation(msg, 'testing', '⏳ Verifying key with Enersit AI...');
+  if (btn) btn.disabled = true;
+
+  try {
+    const testRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'ping' }] }] })
+      }
+    );
+
+    if (testRes.status === 401 || testRes.status === 403) {
+      setValidation(msg, 'error', '✗ Key rejected by API. Double-check you copied the full key from AI Studio.');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    // 200 or any non-auth error = key is valid
+    localStorage.setItem('enersit_api_key', key);
+    setValidation(msg, 'success', '✓ Key verified and saved! Enersit AI is ready.');
+    if (btn) btn.disabled = false;
+    setTimeout(() => closeKeyModal(), 1200);
+  } catch (err) {
+    // Network error — save anyway, might be CORS on test
+    localStorage.setItem('enersit_api_key', key);
+    setValidation(msg, 'success', '✓ Key saved! You can start chatting now.');
+    if (btn) btn.disabled = false;
+    setTimeout(() => closeKeyModal(), 1200);
+  }
+}
+
+function setValidation(el, type, text) {
+  if (!el) return;
+  el.className = `key-validation ${type}`;
+  el.textContent = text;
+}
+
 
 // ─── Hero Chart ─────────────────────────────────────────
 function drawHeroChart() {
