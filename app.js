@@ -10,7 +10,7 @@ const ENERSIT_CONFIG = {
     'gemini-flash-latest',
     'gemini-2.5-flash-lite',
     'gemini-3.5-flash',
-    'gemini-2.5-pro'
+    'gemini-3.1-pro-preview'
   ],
   get apiKey() {
     return localStorage.getItem('enersit_api_key') || 'AIzaSyAh0fTZPU7_jx8VdO8gFMNS3MPsutnbwZU';
