@@ -13,7 +13,7 @@ const ENERSIT_CONFIG = {
     'gemini-3.1-pro-preview'
   ],
   get apiKey() {
-    return localStorage.getItem('enersit_api_key') || 'AIzaSyAh0fTZPU7_jx8VdO8gFMNS3MPsutnbwZU';
+    return localStorage.getItem('enersit_api_key') || 'AQ.Ab8RN6LTKpKlESyayO0Ft610zLcCf2y1acY5pkTNaZRn8BYBjA';
   },
   systemPrompt: `You are Enersit Frontier AI, an elite proprietary financial intelligence model created by Enersit AI for ApnaStocks.in — India's leading AI-powered stock chat and portfolio strategy platform.
 
